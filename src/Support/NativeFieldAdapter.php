@@ -73,10 +73,6 @@ final class NativeFieldAdapter
                 $column->readOnly($field->isReadOnly());
             }
 
-            if ($field->isDisabled()) {
-                $column->readOnly();
-            }
-
             return $column;
         } catch (InvalidArgumentException $exception) {
             throw $exception;
