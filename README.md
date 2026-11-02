@@ -23,12 +23,12 @@ FNXRepeater mimics the standard Filament Repeater **card appearance** and the mo
 
 ```bash
 composer config repositories.fnx-repeater vcs https://github.com/fnx-software/filament-repeater.git
-composer require 'fnx-software/filament-repeater:dev-main' -W
+composer require 'fnx-software/filament-repeater:dev-feat/fnx-repeater-browser-first' -W
 php artisan filament:assets
 php artisan optimize:clear
 ```
 
-For a non-default development branch, use that branch in place of `dev-main` (e.g. `dev-feat/fnx-repeater-browser-first`). A tagged release and Packagist publication will come **after** integration tests.
+The package currently exists on the `feat/fnx-repeater-browser-first` branch only, with a draft pull request targeting `main`. Do **not** install `dev-main` until the pull request is merged. A tagged release and Packagist publication will come **after** end-to-end Laravel/Livewire integration tests.
 
 The package is auto-discovered through Laravel; no Panel Plugin registration is needed.
 
@@ -130,7 +130,7 @@ python3 tests/js/browser_e2e.py  # Python Playwright + Chromium required
 find src lang -name '*.php' -exec php -l '{}' ';'
 ```
 
-Browser test coverage includes 1,000 items with 25 DOM cards, edit focus retention, local mutations, collapse, RTL, and mobile layout. Full Composer integration, Livewire save, Eloquent relationship handling and real-world load testing remain to be verified.
+Browser test coverage includes 1,000 items with 25 DOM cards, edit focus retention, local mutations, collapse, RTL, and mobile layout. GitHub Actions successfully validates Composer installation against Filament 5.11 and checks static native field conversion. **Full Laravel/Livewire save**, Eloquent relationship handling and real-world load testing remain to be verified.
 
 ## Architectural decision
 
