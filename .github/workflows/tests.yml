@@ -1,0 +1,41 @@
+name: FNXRepeater checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer
+      - name: Composer metadata
+        run: composer validate --no-check-publish
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Native Filament field adapter smoke
+        run: |
+          php -r '
+          require "vendor/autoload.php";
+          $component = \FnxSoftware\FNXRepeater\Forms\Components\FNXRepeater::make("items")
+              ->schema([
+                  \Filament\Forms\Components\TextInput::make("description")->required(),
+                  \Filament\Forms\Components\TextInput::make("quantity")->numeric()->default(1),
+                  \Filament\Forms\Components\Select::make("type")->options(["service" => "Service"]),
+              ]);
+          if (count($component->getFNXColumns()) !== 3) { exit(1); }
+          echo "Native field adapter smoke passed\n";
+          '
+      - name: PHP syntax
+        run: find src lang -name '*.php' -exec php -l '{}' ';'
+      - name: PHP column smoke
+        run: php -d zend.assertions=1 tests/php/column-smoke.php
+      - name: JS tests
+        run: npm test

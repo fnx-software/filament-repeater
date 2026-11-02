@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FNXRepeater playground</title>
+  <link rel="stylesheet" href="../resources/css/fnx-repeater.css">
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; margin: 0; background: #f9fafb; color: #1f2937; }
+    .shell { margin: 0 auto; max-width: 1080px; padding: 24px; }
+    .demo-top { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+    .demo-heading { font-size:24px; font-weight:700; margin:0 0 6px; }
+    .demo-desc { color:#6b7280; margin:0; font-size:13px; }
+    .demo-controls { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .demo-controls button { background:white; padding:8px 11px; border-radius:7px; border:1px solid #d1d5db; cursor:pointer; }
+    .demo-card { padding:22px; border:1px solid #e5e7eb; background:white; border-radius:12px; box-shadow:0 2px 12px #00000008; }
+    .demo-title { font-weight:600; margin:0 0 14px; font-size:16px; }
+    .demo-bottom { margin-top:12px; color:#6b7280; font-size:12px; }
+    .demo-stats { display:flex; gap:10px; color:#6b7280; font-size:12px; margin-top:12px; }
+    .dark { background: #030712; color:#f9fafb; }
+    .dark .demo-card { background:#111827; border-color:#374151; }
+    .dark .demo-controls button { color:white; background:#1f2937; border-color:#374151; }
+    @media(max-width:600px){ .shell {padding:12px} .demo-card {padding:12px} }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="demo-top">
+      <div><h1 class="demo-heading">FNXRepeater</h1><p class="demo-desc">Filament-style card repeater • Client-first playground</p></div>
+      <div class="demo-controls">
+        <button id="seed100" type="button">100 items</button>
+        <button id="seed1000" type="button">1,000 items</button>
+        <button id="rtl" type="button">العربية / RTL</button>
+        <button id="theme" type="button">Dark / Light</button>
+        <button id="save" type="button">Simulate Save</button>
+      </div>
+    </div>
+    <section class="demo-card">
+      <h2 class="demo-title">Invoice items</h2>
+      <div id="repeater"></div>
+      <div class="demo-stats"><span>Rows: <b id="statsRows">2</b></span><span>Rendered cards: <b id="statsDom">2</b></span><span>Network requests: <b id="statsNetwork">0</b></span></div>
+    </section>
+    <p class="demo-bottom">Standalone playground: Simulate Save does not write to Laravel or a database. Real validation and saving happen on the server.</p>
+  </main>
+<script type="module">
+  import mountFNXRepeater from '../dist/fnx-repeater.js';
+  const labels = {
+    en: { add:'Add to items', item:'Item', items:'items', empty:'No items yet', duplicate:'Duplicate', delete:'Delete', moveUp:'Move up', moveDown:'Move down', drag:'Drag to reorder', previous:'Previous', next:'Next', page:'Page', showing:'Showing', of:'of', collapse:'Collapse', expand:'Expand', collapseAll:'Collapse all', expandAll:'Expand all', undo:'Undo delete' },
+    ar: { add:'إضافة عنصر', item:'عنصر', items:'عناصر', empty:'لا توجد عناصر', duplicate:'نسخ العنصر', delete:'حذف', moveUp:'تحريك للأعلى', moveDown:'تحريك للأسفل', drag:'اسحب لإعادة الترتيب', previous:'السابق', next:'التالي', page:'صفحة', showing:'عرض', of:'من', collapse:'طي', expand:'توسيع', collapseAll:'طي الكل', expandAll:'توسيع الكل', undo:'تراجع عن الحذف' },
+  };
+  const columns = [
+    { name:'product', label:'Product / المنتج', type:'text', required:true, placeholder:'Service or product', default:'' },
+    { name:'quantity', label:'Quantity / الكمية', type:'number', min:1, default:1 },
+    { name:'price', label:'Unit Price / السعر', type:'number', min:0, default:0 },
+    { name:'category', label:'Category / الفئة', type:'select', options: { service:'Service', product:'Product' }, default:'service' },
+    { name:'taxable', label:'Taxable / خاضع للضريبة', type:'checkbox', default:true },
+  ];
+  let locale = 'en';
+  let requests = 0;
+  const state = { rows:[
+    {product:'Brand design package', quantity:1, price:450, category:'service', taxable:true},
+    {product:'Photography session', quantity:2, price:175, category:'service', taxable:false},
+  ]};
+  function configuration() { return { columns, maxItems:2000, pageSize:25, gridColumns:2, itemLabelColumn:'product', ...{ labels:labels[locale] } }; }
+  const props = { id:'lines', value:state.rows, isDisabled:false, isReadOnly:false, isInvalid:false, onBlur:()=>{}, onChange(value) {state.rows=value; props.value=value; refreshStats();}, configuration:configuration() };
+  const widget = mountFNXRepeater({ host:document.querySelector('#repeater'), props });
+  function refreshStats() { document.querySelector('#statsRows').textContent=state.rows.length; document.querySelector('#statsDom').textContent=document.querySelectorAll('.fnx-r-item').length; document.querySelector('#statsNetwork').textContent=requests; }
+  function replaceRows(rows) {state.rows=rows; widget.update({...props,value:rows,configuration:configuration()}); refreshStats();}
+  document.querySelector('#seed100').addEventListener('click',()=>replaceRows(Array.from({length:100},(_,i)=>({product:`Item ${i+1}`,quantity:1,price:i,category:'product',taxable:true}))));
+  document.querySelector('#seed1000').addEventListener('click',()=>replaceRows(Array.from({length:1000},(_,i)=>({product:`Item ${i+1}`,quantity:1,price:i,category:'product',taxable:true}))));
+  document.querySelector('#rtl').addEventListener('click',()=>{locale=locale==='en'?'ar':'en';document.documentElement.dir=locale==='ar'?'rtl':'ltr';widget.update({...props,configuration:configuration()});});
+  document.querySelector('#theme').addEventListener('click',()=>document.body.classList.toggle('dark'));
+  document.querySelector('#save').addEventListener('click',()=>{requests++;refreshStats();});
+  window.__fnxDemo={getRows:()=>state.rows,widget};
+  refreshStats();
+</script>
+</body>
+</html>

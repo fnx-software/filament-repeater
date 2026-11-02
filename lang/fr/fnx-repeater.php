@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'add' => 'Ajouter un élément',
+    'empty' => 'Aucun élément pour le moment.',
+    'items' => 'éléments',
+    'item' => 'Élément',
+    'duplicate' => 'Dupliquer',
+    'undo' => 'Annuler la suppression',
+    'delete' => 'Supprimer',
+    'move_up' => 'Monter',
+    'move_down' => 'Descendre',
+    'drag' => 'Glisser pour réorganiser',
+    'previous' => 'Précédent',
+    'next' => 'Suivant',
+    'page' => 'Page',
+    'showing' => 'Affichage',
+    'of' => 'sur',
+    'rows_per_page' => 'Éléments par page',
+    'max_reached' => "Nombre maximal d'éléments atteint.",
+    'min_reached' => "Nombre minimal d'éléments atteint.",
+    'actions' => 'Actions',
+    'collapse' => 'Réduire',
+    'expand' => 'Développer',
+    'collapse_all' => 'Tout réduire',
+    'expand_all' => 'Tout développer',
+];
