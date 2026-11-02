@@ -37,7 +37,7 @@ final class NativeFieldAdapter
                 ->required($field->isRequired())
                 ->default($field->getDefaultState());
 
-            if (method_exists($field, 'getPlaceholder')) {
+            if ($field instanceof TextInput || $field instanceof Textarea) {
                 $column->placeholder($field->getPlaceholder());
             }
 
