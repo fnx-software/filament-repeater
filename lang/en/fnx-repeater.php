@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'add' => 'Add to items',
+    'empty' => 'No items yet. Click the button below to add one.',
+    'items' => 'items',
+    'item' => 'Item',
+    'duplicate' => 'Duplicate',
+    'undo' => 'Undo delete',
+    'delete' => 'Delete',
+    'move_up' => 'Move up',
+    'move_down' => 'Move down',
+    'drag' => 'Drag to reorder',
+    'previous' => 'Previous',
+    'next' => 'Next',
+    'page' => 'Page',
+    'showing' => 'Showing',
+    'of' => 'of',
+    'rows_per_page' => 'Rows per page',
+    'max_reached' => 'Maximum number of items reached.',
+    'min_reached' => 'Minimum number of items reached.',
+    'actions' => 'Actions',
+    'collapse' => 'Collapse',
+    'expand' => 'Expand',
+    'collapse_all' => 'Collapse all',
+    'expand_all' => 'Expand all',
+];

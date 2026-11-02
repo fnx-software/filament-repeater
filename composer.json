@@ -1,0 +1,25 @@
+{
+    "name": "fnx-software/filament-repeater",
+    "description": "FNXRepeater: a client-first JSON repeater for Filament 5 with a native-style UI and a supported subset of native field schemas",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["filament", "filament-plugin", "repeater", "livewire", "client-side"],
+    "require": {
+        "php": "^8.2",
+        "filament/forms": "^5.11",
+        "filament/support": "^5.11",
+        "illuminate/support": "^11.28|^12.0|^13.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "FnxSoftware\\FNXRepeater\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": ["FnxSoftware\\FNXRepeater\\Providers\\FNXRepeaterServiceProvider"]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
