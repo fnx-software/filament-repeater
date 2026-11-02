@@ -48,7 +48,7 @@ final class FNXRepeater extends Field
         $this->required(fn (): bool => $this->getMinItems() > 0);
         $this->rules([
             fn (): ValidFNXRepeater => new ValidFNXRepeater(
-                $this->getColumns(),
+                $this->getFNXColumns(),
                 $this->getMinItems(),
                 $this->getMaxItems(),
             ),
@@ -68,13 +68,13 @@ final class FNXRepeater extends Field
         }
 
         $this->fnxSchema = array_values($components);
-        $this->getColumns(); // fail fast on unsupported components
+        $this->getFNXColumns(); // fail fast on unsupported components
 
         return $this;
     }
 
     /** @return array<FNXColumn> */
-    public function getColumns(): array
+    public function getFNXColumns(): array
     {
         if ($this->fnxSchema === []) {
             throw new InvalidArgumentException('FNXRepeater requires schema([...]) with at least one supported field.');
@@ -200,7 +200,7 @@ final class FNXRepeater extends Field
     protected function getBlankRow(): array
     {
         $result = [];
-        foreach ($this->getColumns() as $column) {
+        foreach ($this->getFNXColumns() as $column) {
             $config = $column->toArray();
             $result[$config['name']] = $config['default'];
         }
@@ -226,7 +226,7 @@ final class FNXRepeater extends Field
     public function getRendererConfiguration(): array
     {
         return [
-            'columns' => array_map(static fn (FNXColumn $column): array => $column->toArray(), $this->getColumns()),
+            'columns' => array_map(static fn (FNXColumn $column): array => $column->toArray(), $this->getFNXColumns()),
             'pageSize' => min(100, max(5, (int) $this->evaluate($this->pageSize))),
             'minItems' => $this->getMinItems(),
             'maxItems' => $this->getMaxItems(),
